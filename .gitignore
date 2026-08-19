@@ -23,4 +23,5 @@ venv/
 .env
 dev.env
 version.txt
-version_githash.txt
+version_githash.txt*.bak
+*.lastworking

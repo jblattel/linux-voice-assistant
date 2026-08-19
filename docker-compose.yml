@@ -24,7 +24,11 @@ services:
   # Linux Voice Assistant
   linux-voice-assistant:
     container_name: linux-voice-assistant
-    image: "${LVA_IMAGE:-ghcr.io/ohf-voice/linux-voice-assistant}:${LVA_IMAGE_TAG:-latest}"
+    build:
+      context: .
+      args:
+        LVA_IMAGE: "${LVA_IMAGE:-ghcr.io/ohf-voice/linux-voice-assistant}"
+        LVA_IMAGE_TAG: "${LVA_IMAGE_TAG:-latest}"
     restart: unless-stopped
     network_mode: "host"
     user: "${LVA_USER_ID:-1000}:${LVA_USER_GROUP:-1000}"
@@ -33,6 +37,7 @@ services:
       - XDG_RUNTIME_DIR=${LVA_XDG_RUNTIME_DIR:-/run/user/1000}
       - PULSE_SERVER=${LVA_PULSE_SERVER:-/run/user/1000/pulse/native}
       - PULSE_COOKIE=${LVA_PULSE_COOKIE:-/run/user/1000/pulse/cookie}
+      - MPV_HOME=/mpv-config
     env_file: ${ENV_FILE:-.env}
     group_add:
       - audio
@@ -41,6 +46,10 @@ services:
       - SYS_NICE
     volumes:
       # Wakeword data and configuration
+      - ./overrides/mpv_player.py:/app/linux_voice_assistant/mpv_player.py:ro
+      - ./tools/generate_fillers.py:/app/generate_fillers.py:ro
+      # ... keep all your existing volumes
+      - ./mpv-config:/mpv-config:ro
       - wakeword_data:/app/local
       - wakeword_custom:/app/wakewords/custom
       - configuration:/app/configuration
