@@ -36,7 +36,10 @@ FILLER_STAGES: Dict[str, dict] = {
 
 
 class MpvMediaPlayer:
-    """Drop-in replacement that uses paplay instead of libmpv.
+     """Media player entity used by LVA (bind-mounted in place of the
+        default mpv-based player). Despite the class name, actual playback
+        uses paplay + mpg123, not mpv/libmpv -- see notes below.
+        ... 
 
     Adds three things beyond stock behavior:
       1. mp3 responses are decoded via mpg123 before being handed to
